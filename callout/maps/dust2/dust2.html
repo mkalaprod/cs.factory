@@ -40,6 +40,55 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .draw-toggle, .reset-draw-btn {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #fff;
+        }
+
+        .draw-toggle svg, .reset-draw-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .draw-toggle:hover, .reset-draw-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.05);
+        }
+
+        .draw-toggle.active {
+            background: rgba(255, 70, 50, 0.2);
+            border-color: rgba(255, 70, 50, 0.5);
+        }
+
+        .reset-draw-btn {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.8);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reset-draw-btn.visible {
+            opacity: 1;
+            pointer-events: all;
+            transform: scale(1);
+        }
+
         .logo {
             height: 45px;
             width: auto;
@@ -244,6 +293,84 @@
             display: block;
         }
 
+        .draw-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            cursor: crosshair;
+            touch-action: none;
+            display: none;
+        }
+
+        .draw-canvas.active {
+            display: block;
+        }
+
+        .draw-mode .callout {
+            pointer-events: none;
+        }
+
+        .color-palette {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .color-palette.visible {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(0);
+        }
+
+        .color-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .color-option.selected {
+            border-color: #fff;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+
+        .color-option.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
         .callout {
             position: absolute;
             color: #fff;
@@ -423,10 +550,14 @@
         }
 
         .modal-image {
-            width: 100%;
+            max-width: 100%;
+            max-height: calc(85vh - 120px);
+            width: auto;
             height: auto;
             border-radius: 12px;
             display: block;
+            margin: 0 auto;
+            object-fit: contain;
         }
 
         .callout[data-id="1"] { 
@@ -512,7 +643,7 @@
         .callout[data-id="17"] { 
             left: 30%; top: 47%; 
             transform: translate(-50%, -50%) rotate(-45deg); 
-            font-size: 0.72rem; 
+            font-size: 0.5rem; 
         }
         .callout[data-id="18"] { 
             left: 17%; top: 46%; 
@@ -528,6 +659,26 @@
             left: 11.5%; top: 91.5%; 
             transform: translate(-50%, -50%) rotate(0deg); 
             font-size: 0.85rem; 
+        }
+        .callout[data-id="21"] { 
+            left: 63%; top: 90%; 
+            transform: translate(-50%, -50%) rotate(90deg); 
+            font-size: 0.80rem; 
+        }
+        .callout[data-id="22"] { 
+            left: 45%; top: 80%; 
+            transform: translate(-50%, -50%) rotate(90deg); 
+            font-size: 0.80rem; 
+        }
+        .callout[data-id="23"] { 
+            left: 92.5%; top: 60%; 
+            transform: translate(-50%, -50%) rotate(90deg); 
+            font-size: 0.80rem; 
+        }
+        .callout[data-id="24"] { 
+            left: 69%; top: 60%; 
+            transform: translate(-50%, -50%) rotate(90deg); 
+            font-size: 0.80rem; 
         }
 
         @media (max-width: 1200px) {
@@ -608,6 +759,19 @@
             .modal-body {
                 padding: 20px;
             }
+
+            .color-palette {
+                top: 70px;
+                right: 15px;
+                padding: 10px;
+                flex-direction: row;
+                gap: 6px;
+            }
+
+            .color-option {
+                width: 28px;
+                height: 28px;
+            }
         }
     </style>
 </head>
@@ -617,10 +781,28 @@
             <img src="cs2.png" alt="CS2 Logo" class="logo">
         </a>
         <div class="map-title">Dust 2</div>
-        <div class="menu-toggle" id="menu-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
+        <div class="header-actions">
+            <button class="draw-toggle" id="draw-toggle" title="Mode dessin">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                    <path d="M2 2l7.586 7.586"></path>
+                    <circle cx="11" cy="11" r="2"></circle>
+                </svg>
+            </button>
+            <button class="reset-draw-btn" id="reset-draw-btn" title="Réinitialiser le dessin">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+            </button>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </header>
 
@@ -629,22 +811,33 @@
             <p class="menu-subtitle">Sélectionne une map</p>
             <ul class="menu-list">
                 <li class="menu-item"><a href="dust2.html" class="menu-link">Dust 2</a></li>
-                <li class="menu-item"><a href="mirage.html" class="menu-link">Mirage</a></li>
-                <li class="menu-item"><a href="inferno.html" class="menu-link">Inferno</a></li>
-                <li class="menu-item"><a href="nuke.html" class="menu-link">Nuke</a></li>
-                <li class="menu-item"><a href="ancient.html" class="menu-link">Ancient</a></li>
-                <li class="menu-item"><a href="anubis.html" class="menu-link">Anubis</a></li>
-                <li class="menu-item"><a href="cache.html" class="menu-link">Cache</a></li>
-                <li class="menu-item"><a href="overpass.html" class="menu-link">Overpass</a></li>
+                <li class="menu-item"><a href="../mirage/mirage.html" class="menu-link">Mirage</a></li>
+                <li class="menu-item"><a href="../inferno/inferno.html" class="menu-link">Inferno</a></li>
+                <li class="menu-item"><a href="../nuke/nuke.html" class="menu-link">Nuke</a></li>
+                <li class="menu-item"><a href="../ancient/ancient.html" class="menu-link">Ancient</a></li>
+                <li class="menu-item"><a href="../anubis/anubis.html" class="menu-link">Anubis</a></li>
+                <li class="menu-item"><a href="../cache/cache.html" class="menu-link">Cache</a></li>
+                <li class="menu-item"><a href="../overpass/overpass.html" class="menu-link">Overpass</a></li>
             </ul>
         </div>
     </div>
     
     <div class="container">
         <div class="map-section">
+            <div class="color-palette" id="color-palette">
+                <div class="color-option selected" data-color="#ff4632" style="background-color: #ff4632;"></div>
+                <div class="color-option" data-color="#ffffff" style="background-color: #ffffff;"></div>
+                <div class="color-option" data-color="#00ff00" style="background-color: #00ff00;"></div>
+                <div class="color-option" data-color="#0099ff" style="background-color: #0099ff;"></div>
+                <div class="color-option" data-color="#ffff00" style="background-color: #ffff00;"></div>
+                <div class="color-option" data-color="#ff00ff" style="background-color: #ff00ff;"></div>
+                <div class="color-option" data-color="#ff9900" style="background-color: #ff9900;"></div>
+                <div class="color-option" data-color="#000000" style="background-color: #000000; border: 1px solid rgba(255, 255, 255, 0.3);"></div>
+            </div>
             <div class="map-wrapper">
                 <div class="map-container">
                     <img src="dust2.webp" alt="Dust2 Map" class="map-image">
+                    <canvas class="draw-canvas" id="draw-canvas"></canvas>
                     
                     <div class="callout" data-id="1" data-image="long.png">LONG</div>
                     <div class="callout" data-id="2" data-image="bp-a.png">BP A</div>
@@ -666,6 +859,10 @@
                     <div class="callout" data-id="18" data-image="b-main.png">B MAIN / TUNNEL</div>
                     <div class="callout" data-id="19" data-image="prespawn-b.png">PRESPAWN B</div>
                     <div class="callout" data-id="20" data-image="t-car.png">T CAR</div>
+                    <div class="callout" data-id="21" data-image="tires.png">TIRES</div>
+                    <div class="callout" data-id="22" data-image="suicide.png">SUICIDE</div>
+                    <div class="callout" data-id="23" data-image="upper-pit.png">UPPER PIT</div>
+                    <div class="callout" data-id="24" data-image="sas-long.png">SAS LONG</div>
                 </div>
             </div>
         </div>
@@ -691,6 +888,10 @@
             <div class="callout-item" data-image="lower-stairs.png" data-name="LOWER STAIRS">LOWER STAIRS</div>
             <div class="callout-item" data-image="b-main.png" data-name="B MAIN">B MAIN / TUNNEL</div>
             <div class="callout-item" data-image="t-car.png" data-name="T CAR">T CAR</div>
+            <div class="callout-item" data-image="tires.png" data-name="TIRES">TIRES</div>
+            <div class="callout-item" data-image="suicide.png" data-name="SUICIDE">SUICIDE</div>
+            <div class="callout-item" data-image="upper-pit.png" data-name="UPPER PIT">UPPER PIT</div>
+            <div class="callout-item" data-image="sas-long.png" data-name="SAS LONG">SAS LONG</div>
         </div>
     </div>
 
@@ -775,6 +976,123 @@
                 }
             }
         });
+
+        const drawToggle = document.getElementById('draw-toggle');
+        const resetDrawBtn = document.getElementById('reset-draw-btn');
+        const drawCanvas = document.getElementById('draw-canvas');
+        const mapContainer = document.querySelector('.map-container');
+        const mapWrapper = document.querySelector('.map-wrapper');
+        const colorPalette = document.getElementById('color-palette');
+        const colorOptions = document.querySelectorAll('.color-option');
+        
+        let isDrawing = false;
+        let isDrawMode = false;
+        let ctx = null;
+        let currentColor = '#ff4632';
+
+        function initCanvas() {
+            const rect = mapContainer.getBoundingClientRect();
+            drawCanvas.width = rect.width;
+            drawCanvas.height = rect.height;
+            ctx = drawCanvas.getContext('2d');
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+
+        colorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                colorOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                currentColor = option.dataset.color;
+                if (ctx) {
+                    ctx.strokeStyle = currentColor;
+                }
+            });
+        });
+
+        function resizeCanvas() {
+            if (isDrawMode) {
+                initCanvas();
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        drawToggle.addEventListener('click', () => {
+            isDrawMode = !isDrawMode;
+            drawToggle.classList.toggle('active', isDrawMode);
+            drawCanvas.classList.toggle('active', isDrawMode);
+            mapWrapper.classList.toggle('draw-mode', isDrawMode);
+            
+            if (isDrawMode) {
+                initCanvas();
+                resetDrawBtn.classList.add('visible');
+                colorPalette.classList.add('visible');
+            } else {
+                if (ctx) {
+                    ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+                }
+                resetDrawBtn.classList.remove('visible');
+                colorPalette.classList.remove('visible');
+            }
+        });
+
+        resetDrawBtn.addEventListener('click', () => {
+            if (ctx) {
+                ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+            }
+        });
+        function getCanvasCoordinates(e) {
+            const rect = drawCanvas.getBoundingClientRect();
+            const scaleX = drawCanvas.width / rect.width;
+            const scaleY = drawCanvas.height / rect.height;
+            
+            if (e.touches && e.touches.length > 0) {
+                return {
+                    x: (e.touches[0].clientX - rect.left) * scaleX,
+                    y: (e.touches[0].clientY - rect.top) * scaleY
+                };
+            }
+            return {
+                x: (e.clientX - rect.left) * scaleX,
+                y: (e.clientY - rect.top) * scaleY
+            };
+        }
+
+        function startDrawing(e) {
+            if (!isDrawMode) return;
+            isDrawing = true;
+            const coords = getCanvasCoordinates(e);
+            ctx.beginPath();
+            ctx.moveTo(coords.x, coords.y);
+            e.preventDefault();
+        }
+
+        function draw(e) {
+            if (!isDrawMode || !isDrawing) return;
+            const coords = getCanvasCoordinates(e);
+            ctx.lineTo(coords.x, coords.y);
+            ctx.stroke();
+            e.preventDefault();
+        }
+
+        function stopDrawing(e) {
+            if (!isDrawMode) return;
+            isDrawing = false;
+            e.preventDefault();
+        }
+
+        drawCanvas.addEventListener('mousedown', startDrawing);
+        drawCanvas.addEventListener('mousemove', draw);
+        drawCanvas.addEventListener('mouseup', stopDrawing);
+        drawCanvas.addEventListener('mouseleave', stopDrawing);
+
+        drawCanvas.addEventListener('touchstart', startDrawing);
+        drawCanvas.addEventListener('touchmove', draw);
+        drawCanvas.addEventListener('touchend', stopDrawing);
+        drawCanvas.addEventListener('touchcancel', stopDrawing);
     </script>
 </body>
 </html>
