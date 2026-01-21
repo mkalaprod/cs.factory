@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[C.F] EN CONSTRUCTION</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .header-title {
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+        .construction-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100%;
+            padding: 20px;
+            position: relative;
+            background: radial-gradient(circle at center, #111 0%, #000 70%);
+        }
+
+        .construction-title {
+            font-size: 5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, #888 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .construction-subtitle {
+            font-size: 1.2rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 600;
+            margin-bottom: 60px;
+            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards;
+            opacity: 0;
+        }
+
+        .back-btn {
+            padding: 15px 30px;
+            border-radius: 12px;
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-5px);
+            background: #1a1a1a;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6),
+                        0 0 0 1px rgba(255, 70, 50, 0.3);
+            border-color: rgba(255, 70, 50, 0.3);
+        }
+
+        .back-btn span {
+            color: #ff4632;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .construction-title { font-size: 3rem; }
+            .construction-subtitle { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="../../../index.html">
+            <img src="cs2.png" alt="CS2 Logo" class="logo">
+        </a>
+        <div class="header-title">MAINTENANCE</div>
+    </header>
+
+    <main class="construction-container">
+        
+        <h1 class="construction-title">EN CONSTRUCTION</h1>
+        <div class="construction-subtitle">Cette section sera bientôt disponible</div>
+
+        <a href="../../callout.html" class="back-btn">
+            <span>←</span> Retour au callout
+        </a>
+
+    </main>
+
+</body>
+</html>

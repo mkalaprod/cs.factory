@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[C.F] Callout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .header-title {
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+        .main-container {
+            padding: 120px 40px 60px 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .hero-text {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #fff 0%, #888 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 600;
+        }
+
+        .maps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            perspective: 1000px;
+        }
+
+        .map-card {
+            position: relative;
+            height: 450px;
+            border-radius: 20px;
+            overflow: hidden;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #111;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .map-logo {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            object-fit: cover;
+            z-index: 3;
+        }
+
+        .map-card:hover .map-logo {
+            transform: translateY(-1px) scale(1.03);
+            transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .map-card:nth-child(1) { animation-delay: 0.1s; }
+        .map-card:nth-child(2) { animation-delay: 0.15s; }
+        .map-card:nth-child(3) { animation-delay: 0.2s; }
+        .map-card:nth-child(4) { animation-delay: 0.25s; }
+        .map-card:nth-child(5) { animation-delay: 0.3s; }
+        .map-card:nth-child(6) { animation-delay: 0.35s; }
+        .map-card:nth-child(7) { animation-delay: 0.4s; }
+        .map-card:nth-child(8) { animation-delay: 0.45s; }
+
+        .map-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(0,0,0,0) 0%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.95) 100%
+            );
+            transition: opacity 0.3s ease;
+        }
+
+        .map-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px;
+            transform: translateY(0);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .map-name {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .map-name::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 4px;
+            background: linear-gradient(90deg, #ff4632, #ff6b5a);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px;
+        }
+
+        .view-btn {
+            font-size: 0.9rem;
+            color: #ccc;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .map-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6),
+                        0 0 0 1px rgba(255, 70, 50, 0.3);
+        }
+
+        .map-card:hover .map-bg {
+            transform: scale(1.1);
+        }
+
+        .map-card:hover .map-name::after {
+            width: 100%;
+        }
+
+        .map-card:hover .map-content {
+            transform: translateY(-10px);
+        }
+
+        .map-card:hover .view-btn {
+            opacity: 1;
+            transform: translateY(0);
+            color: #fff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1024px) {
+            .hero-title { font-size: 2.5rem; }
+            .map-card { height: 350px; }
+            .map-logo { width: 50px; height: 50px; border-radius: 12px; }
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 0 20px; height: 60px; }
+            .main-container { padding: 100px 20px 40px; }
+            .hero-title { font-size: 2rem; }
+            .maps-grid { grid-template-columns: 1fr; gap: 20px; }
+            .map-card { height: 280px; }
+            .map-logo { top: 14px; left: 14px; width: 46px; height: 46px; border-radius: 12px; }
+            
+            .view-btn { opacity: 1; transform: translateY(0); }
+            .map-content { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="../index.html">
+            <img src="cs2.png" alt="CS2 Logo" class="logo">
+        </a>
+        <div class="header-title">CALLOUT</div>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="hero-text">
+            <h1 class="hero-title">SÉLECTIONNE UNE MAP</h1>
+        </div>
+
+        <div class="maps-grid">
+            
+            <a href="maps/dust2/dust2.html" class="map-card">
+                <img class="map-logo" src="dust2-logo.png" alt="Logo Dust 2">
+                <div class="map-bg" style="background-image: url('dust2.png');"></div>
+                <div class="map-overlay"></div>
+                <div class="map-content">
+                    <div class="map-name">DUST 2</div>
+                    <div class="view-btn">Explorer la map <span>→</span></div>
+                </div>
+            </a>
+
+            <a href="maps/mirage/mirage.html" class="map-card">
+                <img class="map-logo" src="mirage-logo.png" alt="Logo Mirage">
+                <div class="map-bg" style="background-image: url('mirage.png');"></div>
+                <div class="map-overlay"></div>
+                <div class="map-content">
+                    <div class="map-name">MIRAGE</div>
+                    <div class="view-btn">Explorer la map <span>→</span></div>
+                </div>
+            </a>
+
+            <a href="maps/inferno/inferno.html" class="map-card">
+                <img class="map-logo" src="inferno-logo.png" alt="Logo Inferno">
+                <div class="map-bg" style="background-image: url('inferno.png');"></div>
+                <div class="map-overlay"></div>
+                <div class="map-content">
+                    <div class="map-name">INFERNO</div>
+                    <div class="view-btn">Explorer la map <span>→</span></div>
+                </div>
+            </a>
+
+            <a href="maps/nuke/nuke.html" class="map-card">
+                <img class="map-logo" src="nuke-logo.png" alt="Logo Nuke">
+                <div class="map-bg" style="background-image: url('nuke.png');"></div>
+                <div class="map-overlay"></div>
+                <div class="map-content">
+                    <div class="map-name">NUKE</div>
+                    <div class="view-btn">Explorer la map <span>→</span></div>
+                </div>
+            </a>
+
+            <a href="maps/ancient/ancient.html" class="map-card">
+                <img class="map-logo" src="ancient-logo.png" alt="Logo Ancient">
+                <div class="map-bg" style="background-image: url('ancient.png');"></div>
+                <div class="map-overlay"></div>
+                <div class="map-content">
+                    <div class="map-name">ANCIENT</div>
+                    <div class="view-btn">Explorer la map <span>→</span></div>
+                </div>
+            </a>
+
+            <a href="maps/anubis/anubis.html" class="map-card">
+                <img class="map-logo" src="anubis-logo.png" alt="Logo Anubis">
+                <div class="map-bg" style="background-image: url('anubis.png');"></div>
+                <div class="map-overlay"></div>
+                <div class="map-content">
+                    <div class="map-name">ANUBIS</div>
+                    <div class="view-btn">Explorer la map <span>→</span></div>
+                </div>
+            </a>
+
+            <a href="maps/cache/cache.html" class="map-card">
+                <img class="map-logo" src="cache-logo.png" alt="Logo Cache">
+                <div class="map-bg" style="background-image: url('cache.png');"></div>
+                <div class="map-overlay"></div>
+                <div class="map-content">
+                    <div class="map-name">CACHE</div>
+                    <div class="view-btn">Explorer la map <span>→</span></div>
+                </div>
+            </a>
+
+            <a href="maps/overpass/overpass.html" class="map-card">
+                <img class="map-logo" src="overpass-logo.png" alt="Logo Overpass">
+                <div class="map-bg" style="background-image: url('overpass.png');"></div>
+                <div class="map-overlay"></div>
+                <div class="map-content">
+                    <div class="map-name">OVERPASS</div>
+                    <div class="view-btn">Explorer la map <span>→</span></div>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+</body>
+</html>
